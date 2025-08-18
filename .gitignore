@@ -9,3 +9,4 @@ yarn-error.log*
 .env.production.local
 dist/
 build/
+/src/generated/prisma

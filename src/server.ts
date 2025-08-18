@@ -1,12 +1,12 @@
-import express, { NextFunction, Request, Response } from "express";
+import express, { Request, Response, NextFunction } from 'express'
 import 'express-async-errors'
 
-import { router } from "./routes";
+import { router } from './routes';
 
 const app = express();
-app.use(express.json())
 
-app.use(router);
+app.use(express.json())
+app.use(router)
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
     if (error instanceof Error) {
@@ -17,8 +17,8 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
 
     return res.status(500).json({
         status: 'error',
-        message: 'internal server error!!!'
+        message: 'server internal error'
     })
 })
 
-app.listen(3333, () => console.log("Servidor online!"))
+app.listen(3333, () => console.log("servidor online!"))
