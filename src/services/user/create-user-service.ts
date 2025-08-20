@@ -1,3 +1,4 @@
+import { hash } from "bcryptjs";
 import prismaClient from "../../prisma";
 
 
@@ -22,11 +23,13 @@ class CreateUserService {
             throw new Error("Email already registered")
         }
 
+        const passwordCripto = await hash(password, 8)
+
         const user = await dataBase.user.create({
             data: {
                 name: name,
                 email: email,
-                password: password
+                password: passwordCripto
             },
             select: {
                 id: true,
