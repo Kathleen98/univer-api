@@ -9,7 +9,9 @@
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
     "target": "es2016",
-    "types": [],
+    "types": ["express"],
+    "typeRoots": ["./src/@types"],
+    
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
@@ -40,5 +42,9 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-  }
+  },
+   "include": [
+    "src/**/*",
+    "src/@types/**/*"
+  ],
 }
