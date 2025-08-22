@@ -14,15 +14,72 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model  User{
-  id String @id @default(uuid())
-  name String
-  email String
-  password String
-  plan_type String @default("free")
-  payment Boolean @default(false)
+model User {
+  id         String @id @default(uuid())
+  name       String
+  email      String
+  password   String
+  plan_type  String  @default("free")
+  payment    Boolean @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
+  // Relacionamentos
+  videos     Video[]
+
   @@map("users")
+}
+
+
+model Video {
+  id           String   @id @default(uuid())
+  title        String
+  description  String?
+  duration     Int      // em segundos
+  category     String
+  
+  // URLs e arquivos
+  video_url    String   // URL do arquivo de vídeo
+  thumbnail_url String? // URL da thumbnail/capa
+  
+  // Metadados técnicos
+  resolution   String?  // "1080p", "720p", "4K", etc.
+  file_size    BigInt?  // tamanho do arquivo em bytes
+  format       String?  // "mp4", "webm", etc.
+  
+  // Status e visibilidade
+  status       VideoStatus @default(DRAFT)
+  is_public    Boolean     @default(false)
+  
+  // SEO e busca
+  slug         String   @unique // para URLs amigáveis
+  tags         String[] // array de tags para busca
+  
+  // Relacionamentos
+  uploader_id  String
+  uploader     User     @relation(fields: [uploader_id], references: [id], onDelete: Cascade)
+  
+  // Estatísticas
+  view_count   Int      @default(0)
+  like_count   Int      @default(0)
+  
+  // Timestamps
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now())
+  published_at DateTime?
+  
+  // Índices para performance
+  @@index([status])
+  @@index([category])
+  @@index([created_at])
+  @@index([view_count])
+  @@map("videos")
+}
+
+enum VideoStatus {
+  DRAFT      // Rascunho
+  PROCESSING // Processando upload
+  PUBLISHED  // Publicado
+  PRIVATE    // Privado
+  ARCHIVED   // Arquivado
 }
