@@ -24,62 +24,128 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
-  // Relacionamentos
-  videos     Video[]
-
   @@map("users")
 }
 
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
 model Video {
-  id           String   @id @default(uuid())
-  title        String
-  description  String?
-  duration     Int      // em segundos
-  category     String
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  duration    Int      // duração em segundos
+  releaseDate DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   
   // URLs e arquivos
-  video_url    String   // URL do arquivo de vídeo
-  thumbnail_url String? // URL da thumbnail/capa
+  videoUrl    String
+  thumbnailUrl String
+  trailerUrl  String?
   
-  // Metadados técnicos
-  resolution   String?  // "1080p", "720p", "4K", etc.
-  file_size    BigInt?  // tamanho do arquivo em bytes
-  format       String?  // "mp4", "webm", etc.
-  
-  // Status e visibilidade
-  status       VideoStatus @default(DRAFT)
-  is_public    Boolean     @default(false)
-  
-  // SEO e busca
-  slug         String   @unique // para URLs amigáveis
-  tags         String[] // array de tags para busca
+  // Classificação e metadados
+  ageRating   AgeRating
+  type        VideoType
+  status      VideoStatus @default(ACTIVE)
+  isOriginal  Boolean     @default(false) // conteúdo original da plataforma
   
   // Relacionamentos
-  uploader_id  String
-  uploader     User     @relation(fields: [uploader_id], references: [id], onDelete: Cascade)
+  genres      VideoGenre[]
+  cast        VideoCast[]
+  seasons     Season[]
+  reviews     Review[]
+  watchlist   UserWatchlist[]
+  watchHistory UserWatchHistory[]
   
-  // Estatísticas
-  view_count   Int      @default(0)
-  like_count   Int      @default(0)
-  
-  // Timestamps
-  created_at   DateTime @default(now())
-  updated_at   DateTime @default(now())
-  published_at DateTime?
-  
-  // Índices para performance
-  @@index([status])
-  @@index([category])
-  @@index([created_at])
-  @@index([view_count])
   @@map("videos")
 }
 
-enum VideoStatus {
-  DRAFT      // Rascunho
-  PROCESSING // Processando upload
-  PUBLISHED  // Publicado
-  PRIVATE    // Privado
-  ARCHIVED   // Arquivado
+model Genre {
+  id     String @id @default(cuid())
+  name   String @unique
+  slug   String @unique
+  
+  videos VideoGenre[]
+  
+  @@map("genres")
+}
+
+model VideoGenre {
+  id      String @id @default(cuid())
+  videoId String
+  genreId String
+  
+  video   Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  genre   Genre @relation(fields: [genreId], references: [id], onDelete: Cascade)
+  
+  @@unique([videoId, genreId])
+  @@map("video_genres")
+}
+
+model Person {
+  id        String   @id @default(cuid())
+  name      String
+  biography String?
+  birthDate DateTime?
+  photoUrl  String?
+  
+  videoCast VideoCast[]
+  
+  @@map("people")
+}
+
+model VideoCast {
+  id       String @id @default(cuid())
+  videoId  String
+  personId String
+  role     CastRole
+  character String? // nome do personagem (para atores)
+  
+  video  Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  person Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+  
+  @@unique([videoId, personId, role])
+  @@map("video_cast")
+}
+
+model Season {
+  id           String @id @default(cuid())
+  videoId      String
+  seasonNumber Int
+  title        String?
+  description  String?
+  releaseDate  DateTime?
+  
+  video    Video     @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  episodes Episode[]
+  
+  @@unique([videoId, seasonNumber])
+  @@map("seasons")
+}
+
+model Episode {
+  id            String   @id @default(cuid())
+  seasonId      String
+  episodeNumber Int
+  title         String
+  description   String?
+  duration      Int      // duração em segundos
+  videoUrl      String
+  thumbnailUrl  String
+  releaseDate   DateTime
+  
+  season Season @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  
+  @@unique([seasonId, episodeNumber])
+  @@map("episodes")
 }
