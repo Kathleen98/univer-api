@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client/edge"
 import prismaClient from "../../prisma"
 
 

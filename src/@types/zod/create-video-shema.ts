@@ -1,90 +1,70 @@
-import z, { string } from "zod";
+import z from "zod";
 
-const VideoStatus = z.enum(['DRAFT', 'PROCESSING', 'PUBLISHED', 'PRIVATE', 'ARCHIVED'])
+// Enums que devem corresponder ao seu schema.prisma
+const AgeRating = z.enum(['G', 'PG', 'PG13', 'R', 'NC17']);
+const VideoType = z.enum(['MOVIE', 'SERIES', 'DOCUMENTARY', 'ANIMATION']);
+const VideoStatus = z.enum([ 'ARCHIVED', 'ACTIVE', 'INACTIVE', 'COMING_SOON']);
 
+// Schema para criação - DEVE corresponder exatamente ao modelo Prisma
 const createVideoSchema = z.object({
     title: z.string().min(1, 'Título é obrigatório'),
     description: z.string().optional(),
     duration: z.number().int().positive('Duração deve ser positiva'),
-    category: z.string().min(1, 'Categoria é obrigatória'),
+    releaseDate: z.coerce.date(), // coerce para aceitar string e converter para Date
+    
+    // URLs - thumbnailUrl é OBRIGATÓRIO no Prisma
+    videoUrl: z.url('URL do vídeo inválida'),
+    thumbnailUrl: z.url('URL do thumbnail inválida'), // OBRIGATÓRIO
+    trailerUrl: z.url('URL do trailer inválida').optional(),
+    
+    // Classificação e metadados - OBRIGATÓRIOS no Prisma
+    ageRating: AgeRating,
+    type: VideoType,
+    status: VideoStatus.optional().default('ACTIVE'), // tem default no Prisma
+    isOriginal: z.boolean().optional().default(false), // tem default no Prisma
+});
 
-    // URLs e arquivos
-    video_url: z.url('URL do vídeo inválida'),
-    thumbnail_url: z.url().optional(),
+// // Schema para atualização (todos os campos opcionais exceto ID)
+// const updateVideoSchema = z.object({
+//     id: z.string().cuid('ID deve ser um CUID válido'), // Prisma usa CUID, não UUID
+//     title: z.string().min(1, 'Título é obrigatório').optional(),
+//     description: z.string().optional(),
+//     duration: z.number().int().positive('Duração deve ser positiva').optional(),
+//     releaseDate: z.coerce.date().optional(),
+    
+//     // URLs
+//     videoUrl: z.string().url('URL do vídeo inválida').optional(),
+//     thumbnailUrl: z.string().url('URL do thumbnail inválida').optional(),
+//     trailerUrl: z.string().url('URL do trailer inválida').optional(),
+    
+//     // Classificação e metadados
+//     ageRating: AgeRating.optional(),
+//     type: VideoType.optional(),
+//     status: VideoStatus.optional(),
+//     isOriginal: z.boolean().optional(),
+// });
 
-    // Metadados técnicos
-    resolution: z.string().optional(),
-    file_size: z.bigint().optional(),
-    format: z.string().optional(),
-
-    // Status e visibilidade
-    status: VideoStatus.default('DRAFT'), // Alinhado com o default do Prisma
-    is_public: z.boolean().default(false), // Alinhado com o default do Prisma
-
-    // SEO e busca
-    slug: z.string().min(1, 'Slug é obrigatório'),
-    tags: z.array(z.string()).default([]),
-
-    // Relacionamentos
-    uploader_id: z.string().min(1, 'ID do uploader é obrigatório'),
-
-    // Timestamps opcionais para criação
-    published_at: z.date().optional()
-})
-
-// Schema para atualização (todos os campos opcionais exceto ID)
-const updateVideoSchema = z.object({
-    id: z.uuid('ID deve ser um UUID válido'),
-    title: z.string().min(1, 'Título é obrigatório').optional(),
-    description: z.string().optional(),
-    duration: z.number().int().positive('Duração deve ser positiva').optional(),
-    category: z.string().min(1, 'Categoria é obrigatória').optional(),
-
-    // URLs e arquivos
-    video_url: z.url('URL do vídeo inválida').optional(),
-    thumbnail_url: z.url().optional(),
-
-    // Metadados técnicos
-    resolution: z.string().optional(),
-    file_size: z.bigint().optional(),
-    format: z.string().optional(),
-
-    // Status e visibilidade
-    status: VideoStatus.optional(),
-    is_public: z.boolean().optional(),
-
-    // SEO e busca
-    slug: z.string().min(1, 'Slug é obrigatório').optional(),
-    tags: z.array(z.string()).optional(),
-
-    // Timestamps
-    published_at: z.date().optional()
-})
-
-// Schema para busca/filtros
-const videoFilterSchema = z.object({
-    category: z.string().optional(),
-    status: VideoStatus.optional(),
-    is_public: z.boolean().optional(),
-    uploader_id: z.string().optional(),
-    tags: z.array(z.string()).optional(),
-    created_after: z.date().optional(),
-    created_before: z.date().optional()
-})
+// // Schema para busca/filtros
+// const videoFilterSchema = z.object({
+//     ageRating: AgeRating.optional(),
+//     type: VideoType.optional(),
+//     status: VideoStatus.optional(),
+//     isOriginal: z.boolean().optional(),
+//     createdAfter: z.coerce.date().optional(),
+//     createdBefore: z.coerce.date().optional(),
+//     title: z.string().optional(),
+// });
 
 // Tipos TypeScript derivados
-
-type UpdateVideoInput = z.infer<typeof updateVideoSchema>
-type VideoFilterInput = z.infer<typeof videoFilterSchema>
+export type CreateVideoInput = z.infer<typeof createVideoSchema>;
+// export type UpdateVideoInput = z.infer<typeof updateVideoSchema>;
+// export type VideoFilterInput = z.infer<typeof videoFilterSchema>;
 
 export {
     createVideoSchema,
-    updateVideoSchema,
-    videoFilterSchema,
+    // updateVideoSchema,
+    // videoFilterSchema,
+    AgeRating,
+    VideoType,
     VideoStatus,
-    type UpdateVideoInput,
-    type VideoFilterInput
-}
-
-export type CreateVideoInput = z.infer<typeof createVideoSchema>
-
+};
