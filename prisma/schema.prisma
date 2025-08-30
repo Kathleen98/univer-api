@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -14,13 +8,167 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Enums definidos
+model User {
+  id           String             @id @default(uuid())
+  name         String
+  email        String             @unique
+  password     String
+  plan_type    String             @default("free")
+  payment      Boolean            @default(false)
+  created_at   DateTime           @default(now())
+  updated_at   DateTime           @updatedAt
+  reviews      Review[]
+  watchHistory UserWatchHistory[]
+  watchlist    UserWatchlist[]
+
+  @@map("users")
+}
+
+model Video {
+  id           String             @id @default(cuid())
+  title        String
+  description  String?
+  duration     Int
+  releaseDate  DateTime
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  videoUrl     String
+  thumbnailUrl String
+  trailerUrl   String?
+  ageRating    AgeRating
+  type         VideoType
+  status       VideoStatus        @default(ACTIVE)
+  isOriginal   Boolean            @default(false)
+  reviews      Review[]
+  seasons      Season[]
+  watchHistory UserWatchHistory[]
+  watchlist    UserWatchlist[]
+  cast         VideoCast[]
+  genres       VideoGenre[]
+
+  @@map("videos")
+}
+
+model Genre {
+  id     String       @id @default(cuid())
+  name   String       @unique
+  slug   String       @unique
+  videos VideoGenre[]
+
+  @@map("genres")
+}
+
+model VideoGenre {
+  id      String @id @default(cuid())
+  videoId String
+  genreId String
+  genre   Genre  @relation(fields: [genreId], references: [id], onDelete: Cascade)
+  video   Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([videoId, genreId])
+  @@map("video_genres")
+}
+
+model Person {
+  id        String      @id @default(cuid())
+  name      String
+  biography String?
+  birthDate DateTime?
+  photoUrl  String?
+  videoCast VideoCast[]
+
+  @@map("people")
+}
+
+model VideoCast {
+  id        String   @id @default(cuid())
+  videoId   String
+  personId  String
+  role      CastRole
+  character String?
+  person    Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([videoId, personId, role])
+  @@map("video_cast")
+}
+
+model Season {
+  id           String    @id @default(cuid())
+  videoId      String
+  seasonNumber Int
+  title        String?
+  description  String?
+  releaseDate  DateTime?
+  episodes     Episode[]
+  video        Video     @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([videoId, seasonNumber])
+  @@map("seasons")
+}
+
+model Episode {
+  id            String   @id @default(cuid())
+  seasonId      String
+  episodeNumber Int
+  title         String
+  description   String?
+  duration      Int
+  videoUrl      String
+  thumbnailUrl  String
+  releaseDate   DateTime
+  season        Season   @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+
+  @@unique([seasonId, episodeNumber])
+  @@map("episodes")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  videoId   String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, videoId])
+  @@map("reviews")
+}
+
+model UserWatchlist {
+  id      String   @id @default(cuid())
+  userId  String
+  videoId String
+  addedAt DateTime @default(now())
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video   Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, videoId])
+  @@map("user_watchlist")
+}
+
+model UserWatchHistory {
+  id        String   @id @default(cuid())
+  userId    String
+  videoId   String
+  watchedAt DateTime @default(now())
+  progress  Int      @default(0)
+  completed Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@map("user_watch_history")
+}
+
 enum AgeRating {
-  G      // Livre
-  PG     // 10 anos
-  PG13   // 13 anos
-  R      // 16 anos
-  NC17   // 18 anos
+  G
+  PG
+  PG13
+  R
+  NC17
 }
 
 enum VideoType {
@@ -44,177 +192,4 @@ enum CastRole {
   WRITER
   CINEMATOGRAPHER
   COMPOSER
-}
-
-model User {
-  id         String   @id @default(uuid())
-  name       String
-  email      String   @unique
-  password   String
-  plan_type  String   @default("free")
-  payment    Boolean  @default(false)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  // Relacionamentos
-  watchlist    UserWatchlist[]
-  watchHistory UserWatchHistory[]
-  reviews      Review[]
-
-  @@map("users")
-}
-
-model Video {
-  id          String      @id @default(cuid())
-  title       String
-  description String?
-  duration    Int         // duração em segundos
-  releaseDate DateTime
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  
-  // URLs e arquivos
-  videoUrl     String
-  thumbnailUrl String
-  trailerUrl   String?
-  
-  // Classificação e metadados
-  ageRating   AgeRating
-  type        VideoType
-  status      VideoStatus @default(ACTIVE)
-  isOriginal  Boolean     @default(false) // conteúdo original da plataforma
-  
-  // Relacionamentos
-  genres       VideoGenre[]
-  cast         VideoCast[]
-  seasons      Season[]
-  reviews      Review[]
-  watchlist    UserWatchlist[]
-  watchHistory UserWatchHistory[]
-  
-  @@map("videos")
-}
-
-model Genre {
-  id     String @id @default(cuid())
-  name   String @unique
-  slug   String @unique
-  
-  videos VideoGenre[]
-  
-  @@map("genres")
-}
-
-model VideoGenre {
-  id      String @id @default(cuid())
-  videoId String
-  genreId String
-  
-  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  genre Genre @relation(fields: [genreId], references: [id], onDelete: Cascade)
-  
-  @@unique([videoId, genreId])
-  @@map("video_genres")
-}
-
-model Person {
-  id        String    @id @default(cuid())
-  name      String
-  biography String?
-  birthDate DateTime?
-  photoUrl  String?
-  
-  videoCast VideoCast[]
-  
-  @@map("people")
-}
-
-model VideoCast {
-  id        String   @id @default(cuid())
-  videoId   String
-  personId  String
-  role      CastRole
-  character String? // nome do personagem (para atores)
-  
-  video  Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  person Person @relation(fields: [personId], references: [id], onDelete: Cascade)
-  
-  @@unique([videoId, personId, role])
-  @@map("video_cast")
-}
-
-model Season {
-  id           String    @id @default(cuid())
-  videoId      String
-  seasonNumber Int
-  title        String?
-  description  String?
-  releaseDate  DateTime?
-  
-  video    Video     @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  episodes Episode[]
-  
-  @@unique([videoId, seasonNumber])
-  @@map("seasons")
-}
-
-model Episode {
-  id            String   @id @default(cuid())
-  seasonId      String
-  episodeNumber Int
-  title         String
-  description   String?
-  duration      Int      // duração em segundos
-  videoUrl      String
-  thumbnailUrl  String
-  releaseDate   DateTime
-  
-  season Season @relation(fields: [seasonId], references: [id], onDelete: Cascade)
-  
-  @@unique([seasonId, episodeNumber])
-  @@map("episodes")
-}
-
-// Modelos adicionais para completar os relacionamentos
-model Review {
-  id        String   @id @default(cuid())
-  userId    String
-  videoId   String
-  rating    Int      // 1-5 estrelas
-  comment   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  
-  @@unique([userId, videoId])
-  @@map("reviews")
-}
-
-model UserWatchlist {
-  id        String   @id @default(cuid())
-  userId    String
-  videoId   String
-  addedAt   DateTime @default(now())
-  
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  
-  @@unique([userId, videoId])
-  @@map("user_watchlist")
-}
-
-model UserWatchHistory {
-  id          String   @id @default(cuid())
-  userId      String
-  videoId     String
-  watchedAt   DateTime @default(now())
-  progress    Int      @default(0) // progresso em segundos
-  completed   Boolean  @default(false)
-  
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  
-  @@map("user_watch_history")
 }

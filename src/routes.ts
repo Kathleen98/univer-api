@@ -4,6 +4,7 @@ import { AuthUserController } from './controllers/user/auth-user-controller'
 import { UserDetailsController } from './controllers/user/user-details.controller'
 import { isAuthenticated } from './middlewares/is-authenticated'
 import { CreateVideoController } from './controllers/video/create-video-controller'
+import { QueryVideoController } from './controllers/video/query-video-controller'
 
 const router = Router()
 
@@ -11,5 +12,7 @@ router.post('/register-user', new CreateUserController().handle)
 router.post('/sign-in', new AuthUserController().handle)
 router.get('/user-info', isAuthenticated, new UserDetailsController().handle)
 
-router.post('/create-video', isAuthenticated, new CreateVideoController().handle)
+router.post('/video-create', isAuthenticated, new CreateVideoController().handle)
+router.get('/videos', isAuthenticated, new QueryVideoController().handle)
+
 export { router }
