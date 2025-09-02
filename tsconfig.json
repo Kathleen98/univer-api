@@ -2,7 +2,7 @@
    "compilerOptions": {
     // Mude esta linha:
     "module": "commonjs", // era "nodenext"
-    
+    "lib": ["es2020", "dom"],
     // Comente/remova estas linhas problemáticas:
     // "exactOptionalPropertyTypes": true,
     // "noUncheckedIndexedAccess": true,
@@ -12,7 +12,7 @@
     
     // Resto mantém igual
     "target": "es2016",
-    "types": ["express"],
+    "types": ["node"],
     "typeRoots": ["./src/@types"],
     
     // Output Settings
@@ -48,7 +48,7 @@
   "include": [
     "src/**/*",
     "src/@types/**/*"
-  ],
+, "prisma/seed.ts"  ],
   "exclude": [
     "node_modules",
     "dist",
