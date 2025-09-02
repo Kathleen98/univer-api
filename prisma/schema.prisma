@@ -18,10 +18,24 @@ model User {
   created_at   DateTime           @default(now())
   updated_at   DateTime           @updatedAt
   reviews      Review[]
-  watchHistory UserWatchHistory[]
-  watchlist    UserWatchlist[]
+  profiles Profile[]
 
   @@map("users")
+}
+
+// Modelo para os perfis
+model Profile{
+  id String @id @default(uuid())
+  name String
+  avatarUrl String?
+  userId String 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  watchHistory UserWatchHistory[]
+  watchList UserWatchlist[]
+
+  @@unique([userId, name])
+  @@map("profiles")
 }
 
 model Video {
@@ -34,6 +48,8 @@ model Video {
   updatedAt    DateTime           @updatedAt
   videoUrl     String
   thumbnailUrl String
+  introStartTime Int?
+  introEndTime Int?
   trailerUrl   String?
   ageRating    AgeRating
   type         VideoType
@@ -117,6 +133,8 @@ model Episode {
   videoUrl      String
   thumbnailUrl  String
   releaseDate   DateTime
+  introStartTime Int?
+  introEndTime Int?
   season        Season   @relation(fields: [seasonId], references: [id], onDelete: Cascade)
 
   @@unique([seasonId, episodeNumber])
@@ -140,24 +158,25 @@ model Review {
 
 model UserWatchlist {
   id      String   @id @default(cuid())
-  userId  String
   videoId String
   addedAt DateTime @default(now())
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   video   Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, videoId])
+  @@unique([profileId, videoId])
   @@map("user_watchlist")
 }
 
 model UserWatchHistory {
   id        String   @id @default(cuid())
-  userId    String
   videoId   String
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   watchedAt DateTime @default(now())
+  episodeId String?
   progress  Int      @default(0)
   completed Boolean  @default(false)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
 
   @@map("user_watch_history")
