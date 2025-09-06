@@ -4,6 +4,16 @@ import { PrismaClient } from '../src/generated/prisma';
 // Inicializa o Prisma Client
 const prisma = new PrismaClient();
 
+function slugify(text: string): string {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')           
+    .replace(/[^\w\-]+/g, '')       
+    .replace(/\-\-+/g, '-');       
+}
+
 async function main() {
   console.log('Iniciando o processo de seeding...');
 
@@ -13,6 +23,7 @@ async function main() {
   
   // --- 1. Criar um Usuário e seus Perfis ---
   const hashedPassword = bcrypt.hashSync('senha123', 10);
+
 
   const user = await prisma.user.create({
     data: {
@@ -35,10 +46,10 @@ async function main() {
 
   console.log(`Usuário e perfis criados: ${user.name}, Perfis: ${user.profiles.map(p => p.name).join(', ')}`);
 
-  // --- 2. Criar um Filme de Exemplo ---
+   const movieTitle = 'A Origem'
   const movie = await prisma.video.create({
     data: {
-      title: 'A Origem',
+      title: movieTitle,
       description: 'Um ladrão que rouba informações ao entrar no subconsciente de seus alvos é encarregado de uma tarefa aparentemente impossível: plantar uma ideia na mente de um CEO.',
       duration: 8880, // em segundos (2h 28min)
       releaseDate: new Date('2010-07-16'),
@@ -48,6 +59,7 @@ async function main() {
       introEndTime: 240,   // Intro termina em 4 minutos
       ageRating: 'PG13',
       type: 'MOVIE',
+      slug: slugify(movieTitle),
       status: 'ACTIVE',
       isOriginal: true,
     }

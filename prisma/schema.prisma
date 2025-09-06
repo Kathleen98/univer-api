@@ -41,6 +41,7 @@ model Profile{
 model Video {
   id           String             @id @default(cuid())
   title        String
+  slug        String @unique
   description  String?
   duration     Int
   releaseDate  DateTime
