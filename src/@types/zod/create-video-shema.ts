@@ -6,22 +6,30 @@ const VideoType = z.enum(['MOVIE', 'SERIES', 'DOCUMENTARY', 'ANIMATION']);
 const VideoStatus = z.enum([ 'ARCHIVED', 'ACTIVE', 'INACTIVE', 'COMING_SOON']);
 
 // Schema para criação - DEVE corresponder exatamente ao modelo Prisma
+
 const createVideoSchema = z.object({
-    title: z.string().min(1, 'Título é obrigatório'),
-    description: z.string().optional(),
-    duration: z.number().int().positive('Duração deve ser positiva'),
-    releaseDate: z.coerce.date(), // coerce para aceitar string e converter para Date
-    
-    // URLs - thumbnailUrl é OBRIGATÓRIO no Prisma
-    videoUrl: z.url('URL do vídeo inválida'),
-    thumbnailUrl: z.url('URL do thumbnail inválida'), // OBRIGATÓRIO
-    trailerUrl: z.url('URL do trailer inválida').optional(),
-    
-    // Classificação e metadados - OBRIGATÓRIOS no Prisma
-    ageRating: AgeRating,
-    type: VideoType,
-    status: VideoStatus.optional().default('ACTIVE'), // tem default no Prisma
-    isOriginal: z.boolean().optional().default(false), // tem default no Prisma
+  title: z.string().min(1, 'Título é obrigatório'),
+  slug: z.string().min(1, 'Slug é obrigatório'), // Obrigatório e único no Prisma
+  description: z.string().optional(), // Opcional no Prisma (String?)
+  duration: z.number().int().positive('Duração deve ser positiva'),
+  releaseDate: z.coerce.date(), // coerce para aceitar string e converter para Date
+  
+  // URLs
+  videoUrl: z.string().url('URL do vídeo inválida'), // Obrigatório no Prisma
+  thumbnailUrl: z.string().url('URL do thumbnail inválida'), // Obrigatório no Prisma
+  trailerUrl: z.string().url('URL do trailer inválida').optional(), // Opcional no Prisma (String?)
+  
+  // Tempos de intro (opcionais no Prisma)
+  introStartTime: z.number().int().nonnegative('Tempo de início deve ser não negativo').optional(),
+  introEndTime: z.number().int().nonnegative('Tempo de fim deve ser não negativo').optional(),
+  
+  // Enums obrigatórios no Prisma
+  ageRating: AgeRating, // Assumindo que AgeRating é um z.enum()
+  type: VideoType, // Assumindo que VideoType é um z.enum()
+  
+  // Campos com defaults no Prisma (opcionais no input)
+  status: VideoStatus.optional().default('ACTIVE'), // Default ACTIVE no Prisma
+  isOriginal: z.boolean().optional().default(false), // Default false no Prisma
 });
 
 // // Schema para atualização (todos os campos opcionais exceto ID)

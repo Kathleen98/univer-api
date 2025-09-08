@@ -4,7 +4,7 @@ import { FilterVideoService } from "../../services/video/filter-video-service";
 class FilterVideoController {
   async handle(req: Request, res: Response ){
 
-    const slug = req.body.slug
+    const slug = req.params
 
     const service = new FilterVideoService
 
