@@ -1,4 +1,5 @@
-import prismaClient from "../../prisma"
+
+import { PrismaClient } from '@prisma/client';
 import { ParamsDictionary } from 'express-serve-static-core';
 
 interface FilterVideoServiceProps{
@@ -8,7 +9,7 @@ interface FilterVideoServiceProps{
 class FilterVideoService{
     async execute({slug} : FilterVideoServiceProps){
 
-      const database = prismaClient
+      const database = PrismaClient
 
       const findVideo = database.video.findUnique({
         where:{

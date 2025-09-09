@@ -1,58 +1,31 @@
 {
-   "compilerOptions": {
-    // Mude esta linha:
-    "module": "commonjs", // era "nodenext"
-    "lib": ["es2020", "dom"],
-    // Comente/remova estas linhas problemáticas:
-    // "exactOptionalPropertyTypes": true,
-    // "noUncheckedIndexedAccess": true,
-    
-    // Adicione esta se não tiver:
-    "moduleResolution": "node",
-    
-    // Resto mantém igual
-    "target": "es2016",
-    "types": ["node", "express"],
-    "typeRoots": ["./src/@types"],
-    
-    // Output Settings
+  "compilerOptions": {
+    /* Configurações do Projeto */
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020"],
+    "sourceMap": true,
+
+    /* Caminhos */
     "outDir": "./dist",
     "rootDir": "./src",
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-    
-    // Module Resolution
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    
-    // Type Checking - Configurações menos restritivas para Prisma
+
+    /* Checagem Estrita de Tipos */
     "strict": true,
     "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "noImplicitReturns": true,
     
-    // Configurações problemáticas para Prisma - removidas/ajustadas
-    // "exactOptionalPropertyTypes": false, // Pode causar problemas com Prisma
-    // "noUncheckedIndexedAccess": false,   // Pode ser muito restritivo
+    /* Resolução de Módulos */
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     
-    // Prisma-friendly options
+    /* Qualidade de Código */
+    "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "isolatedModules": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": [
-    "src/**/*",
-    "src/@types/**/*"
-, "prisma/seed.ts"  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.spec.ts",
-    "**/*.test.ts"
-  ]
+  "include": ["src/**/*.ts"], // Inclui todos os arquivos .ts dentro de src
+  "exclude": ["node_modules"]
 }

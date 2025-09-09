@@ -1,6 +1,7 @@
+import { PrismaClient } from "@prisma/client";
 import { compare } from "bcryptjs";
-import prismaClient from "../../prisma";
 import { sign } from "jsonwebtoken";
+
 
 interface SignInProps {
     email: string;
@@ -10,7 +11,7 @@ interface SignInProps {
 class AuthUserService {
     async execute({ email, password }: SignInProps) {
 
-        const user = await prismaClient.user.findFirst({
+        const user = await PrismaClient.user.findFirst({
             where: {
                 email
             },

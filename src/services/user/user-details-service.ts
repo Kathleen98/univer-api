@@ -1,4 +1,5 @@
-import prismaClient from "../../prisma"
+import { PrismaClient } from "@prisma/client"
+
 
 
 interface UserDetailsServiceProps {
@@ -8,7 +9,7 @@ interface UserDetailsServiceProps {
 class UserDetailsService {
     async execute({ user_id }: UserDetailsServiceProps) {
 
-        const database = prismaClient
+        const database = PrismaClient
 
         const findUser = await database.user.findFirst({
             where: {
