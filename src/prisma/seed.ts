@@ -44,7 +44,6 @@ async function main() {
     },
   });
 
-  console.log(`Usuário e perfis criados: ${user.name}, Perfis: ${user.profiles.map(p => p.name).join(', ')}`);
 
    const movieTitle = 'A Origem'
   const movie = await prisma.video.create({
