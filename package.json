@@ -6,9 +6,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/server.js",
     "dev": "ts-node-dev --transpile-only --files src/server.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "postinstall": "prisma generate"
   },
   "prisma": {
+    "schema": "src/prisma/schema.prisma",
     "seed": "ts-node src/prisma/seed.ts"
   },
   "author": "",
