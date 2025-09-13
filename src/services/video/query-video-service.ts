@@ -1,10 +1,11 @@
-import { PrismaClient } from "@prisma/client"
+import prisma from "../../lib/prisma"
+
 
 
 class QueryVideoService {
   async execute() {
     try {
-      const data = await PrismaClient.video.findMany()
+      const data = await prisma.video.findMany()
 
       return data
 
