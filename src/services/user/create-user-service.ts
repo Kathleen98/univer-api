@@ -1,5 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
+import prisma from "../../lib/prisma";
+
 
 
 
@@ -12,9 +13,7 @@ interface CreateUserProps {
 class CreateUserService {
     async execute({ name, email, password }: CreateUserProps) {
 
-        const dataBase = PrismaClient
-
-        const checkAlreadyEmail = await dataBase.user.findFirst({
+        const checkAlreadyEmail = await prisma.user.findFirst({
             where: {
                 email
             }
@@ -26,7 +25,7 @@ class CreateUserService {
 
         const passwordCripto = await hash(password, 8)
 
-        const user = await dataBase.user.create({
+        const user = await prisma.user.create({
             data: {
                 name: name,
                 email: email,
