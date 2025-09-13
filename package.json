@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/server.js",
     "dev": "prisma generate && ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc && copyfiles -u 1 src/prisma/schema.prisma dist/prisma ",
+    "build": "prisma generate && tsc && copyfiles -u 1 src/prisma/schema.prisma dist/prisma",
     "postinstall": "prisma generate"
   },
   "prisma": {
