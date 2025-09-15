@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { QueryVideoService } from "../../services/video/query-video-service";
+import { QueryVideoService } from "../../services/video/all-video-service";
 
 class QueryVideoController{
   async handle(req: Request, res: Response){
