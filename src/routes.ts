@@ -7,6 +7,7 @@ import { CreateVideoController } from './controllers/video/create-video-controll
 import { QueryVideoController } from './controllers/video/all-video-controller'
 import { FilterVideoController } from './controllers/video/filter-video-controller'
 import { CategoryVideoController } from './controllers/video/category-video-controller'
+import { SearchVideoController } from './controllers/video/search-video-controller'
 
 const router = Router()
 
@@ -15,9 +16,10 @@ router.post('/sign-in', new AuthUserController().handle)
 router.get('/user-info', isAuthenticated, new UserDetailsController().handle)
 
 // videos routes
-router.post('/movie-create', isAuthenticated, new CreateVideoController().handle)
-router.get('/movie', isAuthenticated, new QueryVideoController().handle)
-router.post('/movie/filter/:slug', isAuthenticated, new FilterVideoController().handle)
-router.post('/movie/category/:category', new CategoryVideoController().handle)
+router.post('/video-create', isAuthenticated, new CreateVideoController().handle)
+router.get('/video', isAuthenticated, new QueryVideoController().handle)
+router.post('/video/filter/:slug', isAuthenticated, new FilterVideoController().handle)
+router.get('/video/category/:category', isAuthenticated, new CategoryVideoController().handle)
+router.get('/video/search', isAuthenticated, new SearchVideoController().handle)
 
 export { router }
