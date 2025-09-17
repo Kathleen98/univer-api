@@ -43,9 +43,9 @@ Após dominar essa stack, pretendo migrar para **NestJS** para entender:
 
 ## 📋 Funcionalidades da API
 
-- [ ] **Autenticação e Autorização**
+- [x] **Autenticação e Autorização**
   - [ ] Registro e login de usuários
-  - [ ] JWT tokens
+  - [x] JWT tokens
   - [ ] Refresh tokens
   
 - [ ] **Gerenciamento de Conteúdo**
@@ -56,10 +56,9 @@ Após dominar essa stack, pretendo migrar para **NestJS** para entender:
 - [ ] **Funcionalidades de Usuário**
   - [ ] Histórico de visualização
   - [ ] Lista de favoritos
-  - [ ] Avaliações e comentários
   
 - [ ] **Sistema de Busca**
-  - [ ] Busca por título, categoria, tags
+  - [x] Busca por título, categoria, tags
   - [ ] Filtros avançados
   - [ ] Sugestões personalizadas
 
