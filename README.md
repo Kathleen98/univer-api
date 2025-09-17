@@ -111,12 +111,10 @@ univer-streaming-api/
 ├── src/
 │   ├── controllers/        # Controladores das rotas
 │   ├── services/          # Lógica de negócio
-│   ├── repositories/      # Acesso aos dados
 │   ├── middlewares/       # Middlewares customizados
-│   ├── types/            # Tipos TypeScript
-│   ├── utils/            # Funções utilitárias
-│   ├── config/           # Configurações da aplicação
-│   └── app.ts            # Configuração do Express
+│   ├── @types/            # Tipos TypeScript
+│   ├── server.ts/           # Configurações da aplicação
+│   └── routes.ts            # Configuração do Express
 ├── prisma/
 │   ├── schema.prisma     # Schema do banco de dados
 │   └── migrations/       # Migrações do banco
