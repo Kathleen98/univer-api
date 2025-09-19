@@ -195,6 +195,7 @@ enum VideoType {
   SERIES
   DOCUMENTARY
   ANIMATION
+  NEW
 }
 
 enum VideoStatus {
@@ -202,6 +203,7 @@ enum VideoStatus {
   INACTIVE
   COMING_SOON
   ARCHIVED
+  NEW
 }
 
 enum CastRole {
