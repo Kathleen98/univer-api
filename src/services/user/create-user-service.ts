@@ -2,16 +2,15 @@ import { hash } from "bcryptjs";
 import prisma from "../../lib/prisma";
 
 
-
-
 interface CreateUserProps {
     name: string;
     email: string;
     password: string;
+    role?: string
 }
 
 class CreateUserService {
-    async execute({ name, email, password }: CreateUserProps) {
+    async execute({ name, email, password, role }: CreateUserProps) {
 
         const checkAlreadyEmail = await prisma.user.findFirst({
             where: {
@@ -29,14 +28,16 @@ class CreateUserService {
             data: {
                 name: name,
                 email: email,
-                password: passwordCripto
+                password: passwordCripto,
+                role: role
             },
             select: {
                 id: true,
                 name: true,
                 email: true,
                 plan_type: true,
-                payment: true
+                payment: true,
+                role: true
             }
         })
 

@@ -18,6 +18,7 @@ model User {
   updated_at   DateTime           @updatedAt
   reviews      Review[]
   profiles Profile[]
+  role String?
 
   @@map("users")
 }
@@ -29,7 +30,6 @@ model Profile{
   avatarUrl String?
   userId String 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   watchHistory UserWatchHistory[]
   watchList UserWatchlist[]
 

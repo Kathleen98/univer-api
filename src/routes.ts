@@ -8,11 +8,13 @@ import { QueryVideoController } from './controllers/video/all-video-controller'
 import { FilterVideoController } from './controllers/video/filter-video-controller'
 import { CategoryVideoController } from './controllers/video/category-video-controller'
 import { SearchVideoController } from './controllers/video/search-video-controller'
+import { AdminAithenticated } from './middlewares/is-admin-authenticated'
 
 const router = Router()
 
 router.post('/register-user', new CreateUserController().handle)
 router.post('/sign-in', new AuthUserController().handle)
+router.post('/sign-in/admin', AdminAithenticated, new AuthUserController().handle)
 router.get('/user-info', isAuthenticated, new UserDetailsController().handle)
 
 // videos routes
