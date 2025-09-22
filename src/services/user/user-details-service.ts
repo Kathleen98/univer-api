@@ -1,7 +1,7 @@
 import prisma from "../../lib/prisma"
 
 interface UserDetailsServiceProps {
-    user_id: string
+    user_id: string;
 }
 
 class UserDetailsService {
@@ -18,7 +18,8 @@ class UserDetailsService {
                 name: true,
                 email: true,
                 plan_type: true,
-                payment: true
+                payment: true,
+                role: true
             }
         })
 

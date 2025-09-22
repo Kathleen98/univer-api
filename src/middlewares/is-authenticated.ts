@@ -5,10 +5,6 @@ interface IsAthenticatedProps {
     sub: string
 }
 
-interface CustomRequest extends Request {
-    user_id: string;
-}
-
 export function isAuthenticated(req: Request, res: Response, next: NextFunction) {
 
     const authtoken = req.headers.authorization;
