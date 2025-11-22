@@ -195,4 +195,8 @@ Este projeto é desenvolvido para fins educacionais e não possui fins comerciai
 
 <p align="center">
   Sendo desenvolvido com ❤️ e muita curiosidade sobre backend por Kathleen Santos
+<<<<<<< HEAD
 </p>
+=======
+</p>
+>>>>>>> c77f8800db98dafcecb5554ffb41fe18fa7b09d4
