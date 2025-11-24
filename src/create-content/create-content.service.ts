@@ -4,7 +4,7 @@ import { CreateSingleVideoDto } from "./dto/create-single-video.dto";
 
 
 @Injectable()
-export class SingleVideoService {
+export class CreateContentService {
     constructor(private supabaseService: SupabaseService) { }
 
     async createSingleVideo(
