@@ -1,5 +1,9 @@
 # Univer Streaming API
 
+<br/>
+
+<img src="https://github.com/user-attachments/assets/20ae3a5d-2a8d-4c7e-9864-2360b56a128f" />
+
 > API REST para a plataforma de streaming reimaginada - Agora sendo construída com Nest JS
 
 ## 🎯 Por que estou construindo essa API
