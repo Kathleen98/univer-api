@@ -21,7 +21,7 @@ const createContent = z.object({
     video_url: z.string().optional(),
 })
 
-type CreateContentBodySchema = z.infer<typeof createContent>;
+export type CreateContentBodySchema = z.infer<typeof createContent>;
 
 
 @Controller('create-content')
@@ -45,7 +45,8 @@ export class CreateContentController {
                 banner_url: body.banner_url,
                 trailer_url: body.trailer_url,
                 is_featured: body.is_featured,
-                type: body.type
+                type: body.type,
+                video_url: body.video_url
             }
 
         );
