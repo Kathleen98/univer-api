@@ -1,6 +1,7 @@
-import { BadRequestException, Body, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { SupabaseService } from "src/auth/supabase.service";
 import { CreateSingleVideoDto } from "./dto/create-single-video.dto";
+import { success } from "zod";
 
 
 @Injectable()
@@ -32,8 +33,20 @@ export class CreateContentService {
                 throw new BadRequestException('Create single video failed: ' + contentError.message);
             }
 
+             return {
+                success: true,
+                data: content,
+                message: 'Content created success'
+             }
+
         } catch (error) {
 
+            if(error instanceof BadRequestException){
+                throw error;
+            }
+
+            console.error('Erro inesperado', error)
+            throw new BadRequestException('Erro ao criar conteúdo')
         }
     }
 }

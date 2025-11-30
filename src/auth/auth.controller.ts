@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Headers, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
+import { ZodValidationPipe } from "../pipes/zod-validation-pipe";
+import { signInSchema } from "./dto/sign-in.dto";
 
 
 @Controller('auth')
@@ -15,7 +17,7 @@ export class AuthController {
 
     @Post('signin')
     async signIn(
-        @Body() body: { email: string; password: string },
+        @Body(new ZodValidationPipe(signInSchema)) body: { email: string; password: string },
     ) {
         return this.authService.signIn(body.email, body.password);
     }
@@ -24,7 +26,7 @@ export class AuthController {
     async signOut(
         @Headers('authorization') auth: string,
     ) {
-        const token = auth?.replace('Bearer', '');
+        const token = auth?.replace('Bearer ', '').trim();
         return this.authService.signOut(token);
     }
 
@@ -32,7 +34,7 @@ export class AuthController {
     async getProfile(
         @Headers('authorization') auth: string
     ) {
-        const token = auth?.replace('Bearer', '');
+        const token = auth?.replace('Bearer ', '').trim();
         return this.authService.getUser(token)
     }
 

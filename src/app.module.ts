@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CreateContentoModule } from './create-content/create-content.module';
 
 @Module({
   imports: [
@@ -45,7 +46,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         };
       },
       inject: [ConfigService],
-    })
+    }),
+    CreateContentoModule
   ],
   controllers: [AppController],
   providers: [AppService],

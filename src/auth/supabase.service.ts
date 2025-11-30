@@ -9,7 +9,7 @@ export class SupabaseService {
     constructor(private configService: ConfigService) {
 
         const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
-        const supabaseKey = this.configService.get<string>('SUPABASE_KEY');
+        const supabaseKey = this.configService.get<string>('SUPABASE_SERVICE_ROLE_KEY');
 
         if (!supabaseUrl || !supabaseKey) {
             throw new Error('Supabase URL or Key not provided in environment variables');
