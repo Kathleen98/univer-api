@@ -19,6 +19,8 @@ const createContent = z.object({
     content_id: z.string().optional(),
     season_number: z.number().optional(),
     video_url: z.string().optional(),
+    start_time: z.string().optional(),
+    end_time: z.string().optional()
 })
 
 export type CreateContentBodySchema = z.infer<typeof createContent>;
@@ -46,7 +48,9 @@ export class CreateContentController {
                 trailer_url: body.trailer_url,
                 is_featured: body.is_featured,
                 type: body.type,
-                video_url: body.video_url
+                video_url: body.video_url,
+                start_time: body.start_time,
+                end_time: body.end_time,
             }
 
         );
