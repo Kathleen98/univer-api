@@ -1,7 +1,5 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { SupabaseService } from "src/auth/supabase.service";
-import { CreateSingleVideoDto } from "./dto/create-single-video.dto";
-import { success } from "zod";
 import { CreateContentBodySchema } from "./create-content.controller";
 
 
@@ -42,7 +40,7 @@ export class CreateContentService {
 
            
             let video = null;
-            if (createDto.type === 'movie' && createDto.video_url) {
+            if (createDto.type !== 'series' && createDto.video_url) {
                 const { data: videoData, error: videoError } = await supabase
                     .from('videos')
                     .insert({
@@ -64,6 +62,10 @@ export class CreateContentService {
                 }
 
                 video = videoData;
+            }
+
+            if(createDto.type === "series"){
+                
             }
 
       
